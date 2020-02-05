@@ -1,6 +1,7 @@
 package slackbot
 
 import (
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -17,6 +18,10 @@ var (
 )
 
 func init() {
+	if flag.Lookup("test.v") != nil {
+		return
+	}
+
 	Setup()
 }
 
