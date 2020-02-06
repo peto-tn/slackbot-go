@@ -156,7 +156,7 @@ var helpCommand = &Command{
 }
 
 type HelpCommandOption struct {
-	Desc string `default:"false" choice:"false,true"`
+	Desc string `default:"true" choice:"false,true"`
 }
 
 // PingCommand
