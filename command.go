@@ -2,6 +2,7 @@ package slackbot
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"strings"
 )
@@ -49,53 +50,28 @@ func AddCommand(c *Command) {
 
 func Help(c *Command, desc bool) string {
 	name := c.Name
-	message := c.HelpMessage
+	message := selectString(desc && c.HelpMessage != "", " : "+c.HelpMessage, "")
 
-	optionObj := c.Option
+	// return if option is null
+	if c.Option == nil {
+		return name + message
+	}
+
 	option := ""
-	if optionObj != nil {
-		rt := reflect.TypeOf(optionObj)
-		for i := 0; i < rt.NumField(); i++ {
-			f := rt.Field(i)
-			if option != "" {
-				option += " "
-			}
-			option += "["
-			option += f.Name
+	rt := reflect.TypeOf(c.Option)
+	for i := 0; i < rt.NumField(); i++ {
+		f := rt.Field(i)
+		defaultValue := f.Tag.Get("default")
+		choiceValue := selectString(desc, f.Tag.Get("choice"), "")
 
-			optionValue := ""
-			defaultValue := f.Tag.Get("default")
+		value := selectString(choiceValue != "", choiceValue, defaultValue)
+		value = boldSubstring(value, defaultValue)
+		value = addBrackets(value)
 
-			if desc {
-				choiceValue := f.Tag.Get("choice")
-				if choiceValue != "" {
-					if defaultValue != "" {
-						optionValue = strings.Replace(choiceValue, defaultValue, "*"+defaultValue+"*", 1)
-					} else {
-						optionValue = choiceValue
-					}
-				}
-			}
-			if optionValue == "" && defaultValue != "" {
-				optionValue = "*" + defaultValue + "*"
-			}
-
-			if optionValue != "" {
-				option += "(" + optionValue + ")"
-			}
-			option += "]"
-		}
+		option += fmt.Sprintf(" [%s%s]", f.Name, value)
 	}
 
-	help := name
-	if option != "" {
-		help += " " + option
-	}
-	if desc && message != "" {
-		help += " : " + message
-	}
-
-	return help
+	return name + option + message
 }
 
 func ParseOption(c *Command, options []string) (interface{}, error) {
@@ -117,15 +93,8 @@ func ParseOption(c *Command, options []string) (interface{}, error) {
 
 		// validate by choice value
 		choiceValue := rt.Field(i).Tag.Get("choice")
-		if choiceValue != "" {
-			tmpValue := value
+		if choiceValue != "" && !containsString(strings.Split(choiceValue, ","), value) {
 			value = ""
-			for _, choice := range strings.Split(choiceValue, ",") {
-				if choice == tmpValue {
-					value = tmpValue
-					break
-				}
-			}
 		}
 
 		if value == "" {
