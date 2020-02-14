@@ -136,7 +136,7 @@ func TestHelp(t *testing.T) {
 	testRun(t, "no option desc test", func(t *testing.T) {
 		command := &Command{Name: "test", HelpMessage: "message"}
 		help := Help(command, true)
-		assert.Equal(t, "test : message", help)
+		assert.Equal(t, "test : *_message_*", help)
 	})
 
 	testRun(t, "option test", func(t *testing.T) {
@@ -152,7 +152,7 @@ func TestHelp(t *testing.T) {
 			Desc string `default:"true" choice:"false,true"`
 		}{}}
 		help := Help(command, true)
-		assert.Equal(t, "test [Desc(false,*true*)] : message", help)
+		assert.Equal(t, "test [Desc(false,*true*)] : *_message_*", help)
 	})
 }
 

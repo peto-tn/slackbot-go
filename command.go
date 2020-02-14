@@ -58,7 +58,10 @@ func SetDefaultHelpDescription(description bool) {
 
 func Help(c *Command, desc bool) string {
 	name := c.Name
-	message := selectString(desc && c.HelpMessage != "", " : "+c.HelpMessage, "")
+	message := selectString(desc && c.HelpMessage != "", c.HelpMessage, "")
+	message = italicString(message)
+	message = boldString(message)
+	message = selectString(message != "", " : "+message, "")
 
 	// return if option is null
 	if c.Option == nil {
