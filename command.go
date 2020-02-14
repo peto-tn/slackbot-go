@@ -48,6 +48,14 @@ func AddCommand(c *Command) {
 	commandKeys = append(commandKeys, c.Name)
 }
 
+func SetDefaultHelpDescription(description bool) {
+	if description {
+		helpCommand.Option = HelpCommandOptionDesc{}
+	} else {
+		helpCommand.Option = HelpCommandOptionSimple{}
+	}
+}
+
 func Help(c *Command, desc bool) string {
 	name := c.Name
 	message := selectString(desc && c.HelpMessage != "", " : "+c.HelpMessage, "")
@@ -117,15 +125,31 @@ var helpCommand = &Command{
 
 		help := ""
 		for _, key := range commandKeys {
-			help += Help(commands[key], option.Desc == "true") + "\n"
+			help += Help(commands[key], option.IsDescription() == "true") + "\n"
 		}
 		PostEphemeral(e, help)
 	},
-	Option: HelpCommandOption{},
+	Option: HelpCommandOptionDesc{},
 }
 
-type HelpCommandOption struct {
-	Desc string `default:"true" choice:"false,true"`
+type HelpCommandOption interface {
+	IsDescription() string
+}
+
+type HelpCommandOptionDesc struct {
+	Description string `default:"true" choice:"false,true"`
+}
+
+func (o HelpCommandOptionDesc) IsDescription() string {
+	return o.Description
+}
+
+type HelpCommandOptionSimple struct {
+	Description string `default:"false" choice:"false,true"`
+}
+
+func (o HelpCommandOptionSimple) IsDescription() string {
+	return o.Description
 }
 
 // PingCommand

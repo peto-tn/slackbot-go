@@ -100,6 +100,18 @@ func TestAddCommand(t *testing.T) {
 	})
 }
 
+func TestSetDefaultHelpDescription(t *testing.T) {
+	testRun := Tools_CreateTestRun(Tools_InitCommand, Tools_InitCommand)
+
+	testRun(t, "desc test", func(t *testing.T) {
+		SetDefaultHelpDescription(true)
+	})
+
+	testRun(t, "simple test", func(t *testing.T) {
+		SetDefaultHelpDescription(false)
+	})
+}
+
 func TestHelp(t *testing.T) {
 	testRun := Tools_CreateTestRun(Tools_InitCommand, Tools_InitCommand)
 
