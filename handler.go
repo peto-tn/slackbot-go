@@ -22,14 +22,24 @@ func init() {
 		return
 	}
 
-	Setup()
+	Setup(
+		os.Getenv("SLACK_BOT_USER_ID"),
+		os.Getenv("SLACK_VERIFICATION_TOKEN"),
+		os.Getenv("SLACK_ACCESS_TOKEN"),
+	)
 }
 
-func Setup() {
+func Setup(argBotUserId, argVerificationToken, argAccessToken string) {
 	// get envrironment value
-	slackBotUserId = os.Getenv("SLACK_BOT_USER_ID")
-	verificationToken = os.Getenv("SLACK_VERIFICATION_TOKEN")
-	accessToken = os.Getenv("SLACK_ACCESS_TOKEN")
+	if argBotUserId != "" {
+		slackBotUserId = argBotUserId
+	}
+	if argVerificationToken != "" {
+		verificationToken = argVerificationToken
+	}
+	if argAccessToken != "" {
+		accessToken = argAccessToken
+	}
 
 	// create slack client
 	api = slack.New(accessToken)

@@ -6,18 +6,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Tools_ClearCommand() {
-	commands = map[string]*Command{}
-	commandKeys = []string{}
-}
-
 func Tools_InitCommand() {
-	Tools_ClearCommand()
+	ClearCommand()
 	SetupCommand([]*Command{})
 }
 
 func TestSetupCommand(t *testing.T) {
-	testRun := Tools_CreateTestRun(Tools_ClearCommand, Tools_InitCommand)
+	testRun := Tools_CreateTestRun(ClearCommand, Tools_InitCommand)
 
 	testRun(t, "empty input test", func(t *testing.T) {
 		SetupCommand([]*Command{})
@@ -91,7 +86,7 @@ func TestExecuteCommand(t *testing.T) {
 }
 
 func TestAddCommand(t *testing.T) {
-	testRun := Tools_CreateTestRun(Tools_ClearCommand, Tools_InitCommand)
+	testRun := Tools_CreateTestRun(ClearCommand, Tools_InitCommand)
 
 	testRun(t, "add test", func(t *testing.T) {
 		AddCommand(&Command{Name: "test"})

@@ -20,12 +20,18 @@ var (
 )
 
 func SetupCommand(custom []*Command) {
+	ClearCommand()
 	AddCommand(helpCommand)
 	AddCommand(pingCommand)
 
 	for _, c := range custom {
 		AddCommand(c)
 	}
+}
+
+func ClearCommand() {
+	commands = map[string]*Command{}
+	commandKeys = []string{}
 }
 
 func executeCommand(e Event, texts []string) bool {
