@@ -7,6 +7,7 @@ import (
 	"github.com/nlopes/slack"
 )
 
+// MessageHandler
 type MessageHandler interface {
 	OnMessage(e Event, texts []string)
 	OnMentionMessage(e Event, texts []string)
@@ -16,7 +17,7 @@ var (
 	messageHandler MessageHandler
 )
 
-// Set message handler.
+// SetMessageHandler.
 func SetMessageHandler(handler MessageHandler) {
 	messageHandler = handler
 }
@@ -39,7 +40,7 @@ func onMentionMessage(e Event) {
 	}
 }
 
-// Post message.
+// PostMessage.
 func PostMessage(e Event, message string) {
 	channel := e.Channel()
 	api.PostMessage(
@@ -48,7 +49,7 @@ func PostMessage(e Event, message string) {
 	)
 }
 
-// post ephemeral message.
+// PostEphemeral message.
 func PostEphemeral(e Event, message string) {
 	channel := e.Channel()
 	api.PostEphemeral(
@@ -58,7 +59,7 @@ func PostEphemeral(e Event, message string) {
 	)
 }
 
-// replay message for event.
+// ReplayMessage for event.
 func ReplyMessage(e Event, message string) {
 	channel := e.Channel()
 	threadTimestamp := e.ThreadTimestamp()

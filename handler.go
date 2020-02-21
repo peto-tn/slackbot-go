@@ -49,7 +49,7 @@ func Setup(argBotUserId, argVerificationToken, argAccessToken string) {
 	SetupCommand([]*Command{})
 }
 
-// Receive slack events.
+// OnCall is receive slack events handler.
 func OnCall(w http.ResponseWriter, r *http.Request) {
 	p, err := DecodeJSON(r.Body)
 	if err != nil {

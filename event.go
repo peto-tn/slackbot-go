@@ -1,9 +1,9 @@
 package slackbot
 
-// Slack Event
+// Event
 type Event map[string]interface{}
 
-// Get information as String.
+// String data in Event.
 func (e Event) String(key string) string {
 	if v, ok := e[key]; !ok {
 		return ""
@@ -14,27 +14,27 @@ func (e Event) String(key string) string {
 	}
 }
 
-// Get "type" information.
+// Type of Event.
 func (e Event) Type() string {
 	return e.String("type")
 }
 
-// Get "text" information.
+// Text of Event.
 func (e Event) Text() string {
 	return e.String("text")
 }
 
-// Get "channel" information.
+// Channel of Event.
 func (e Event) Channel() string {
 	return e.String("channel")
 }
 
-// Get "user" information.
+// User of eVent.
 func (e Event) User() string {
 	return e.String("user")
 }
 
-// Get event timestamp. If thread, get thread timestamp.
+// ThreadTimestamp of Event. If not thread, get event timestamp.
 func (e Event) ThreadTimestamp() string {
 	threadTimestamp := e.String("thread_ts")
 	if threadTimestamp != "" {

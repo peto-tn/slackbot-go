@@ -5,10 +5,10 @@ import (
 	"io"
 )
 
-// Slack Event Payload
+// Paylod for Slack Event
 type Payload map[string]interface{}
 
-// Decode json.
+// DecodeJson.
 func DecodeJSON(r io.Reader) (Payload, error) {
 	data := make(map[string]interface{})
 	if err := json.NewDecoder(r).Decode(&data); err != nil {
@@ -17,7 +17,7 @@ func DecodeJSON(r io.Reader) (Payload, error) {
 	return data, nil
 }
 
-// Get information as String.
+// String data in Payload.
 func (p Payload) String(key string) string {
 	if v, ok := p[key]; !ok {
 		return ""
@@ -28,17 +28,17 @@ func (p Payload) String(key string) string {
 	}
 }
 
-// Get "type" information.
+// Type of Payload.
 func (p Payload) Type() string {
 	return p.String("type")
 }
 
-// Get "token" information.
+// Token in Payload.
 func (p Payload) Token() string {
 	return p.String("token")
 }
 
-// Get Event.
+// Event in Payload.
 func (p Payload) Event() Event {
 	return p["event"].(map[string]interface{})
 }

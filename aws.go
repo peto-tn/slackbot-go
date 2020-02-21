@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
-// Handler for AWS Lambda
+// AWSLambdaHandler is handler when a slack event is received via aws lambda.
 func AWSLambdaHandler(ctx context.Context, e events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	r, err := gateway.NewRequest(ctx, e)
 	if err != nil {
@@ -21,7 +21,7 @@ func AWSLambdaHandler(ctx context.Context, e events.APIGatewayProxyRequest) (eve
 	return w.End(), nil
 }
 
-// Start AWS Lambda
+// AWSLambdaStart is start execution of aws lambda.
 func AWSLambdaStart() {
 	lambda.Start(AWSLambdaHandler)
 }
