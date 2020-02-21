@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	slackBotUserId    string
+	slackBotUserID    string
 	verificationToken string
 	accessToken       string
 
@@ -30,10 +30,10 @@ func init() {
 }
 
 // Setup slackbot.
-func Setup(argBotUserId, argVerificationToken, argAccessToken string) {
+func Setup(argBotUserID, argVerificationToken, argAccessToken string) {
 	// get envrironment value
-	if argBotUserId != "" {
-		slackBotUserId = argBotUserId
+	if argBotUserID != "" {
+		slackBotUserID = argBotUserID
 	}
 	if argVerificationToken != "" {
 		verificationToken = argVerificationToken

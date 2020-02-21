@@ -149,7 +149,7 @@ var helpCommand = &Command{
 	Option: HelpCommandOptionDesc{},
 }
 
-// HelpCommandOption
+// HelpCommandOption interface.
 type HelpCommandOption interface {
 	IsDescription() string
 }
@@ -159,7 +159,7 @@ type HelpCommandOptionDesc struct {
 	Description string `default:"true" choice:"false,true"`
 }
 
-// IsDescription
+// IsDescription check.
 func (o HelpCommandOptionDesc) IsDescription() string {
 	return o.Description
 }
@@ -169,7 +169,7 @@ type HelpCommandOptionSimple struct {
 	Description string `default:"false" choice:"false,true"`
 }
 
-// IsDescription
+// IsDescription check.
 func (o HelpCommandOptionSimple) IsDescription() string {
 	return o.Description
 }

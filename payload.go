@@ -8,7 +8,7 @@ import (
 // Paylod for Slack Event
 type Payload map[string]interface{}
 
-// DecodeJson.
+// DecodeJson data.
 func DecodeJSON(r io.Reader) (Payload, error) {
 	data := make(map[string]interface{})
 	if err := json.NewDecoder(r).Decode(&data); err != nil {

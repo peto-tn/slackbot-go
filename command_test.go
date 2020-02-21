@@ -6,13 +6,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Tools_InitCommand() {
+func ToolsInitCommand() {
 	ClearCommand()
 	SetupCommand([]*Command{})
 }
 
 func TestSetupCommand(t *testing.T) {
-	testRun := Tools_CreateTestRun(ClearCommand, Tools_InitCommand)
+	testRun := ToolsCreateTestRun(ClearCommand, ToolsInitCommand)
 
 	testRun(t, "empty input test", func(t *testing.T) {
 		SetupCommand([]*Command{})
@@ -38,7 +38,7 @@ func TestSetupCommand(t *testing.T) {
 }
 
 func TestExecuteCommand(t *testing.T) {
-	testRun := Tools_CreateTestRun(Tools_InitCommand, Tools_InitCommand)
+	testRun := ToolsCreateTestRun(ToolsInitCommand, ToolsInitCommand)
 
 	testRun(t, "execute test", func(t *testing.T) {
 		called := false
@@ -86,7 +86,7 @@ func TestExecuteCommand(t *testing.T) {
 }
 
 func TestAddCommand(t *testing.T) {
-	testRun := Tools_CreateTestRun(ClearCommand, Tools_InitCommand)
+	testRun := ToolsCreateTestRun(ClearCommand, ToolsInitCommand)
 
 	testRun(t, "add test", func(t *testing.T) {
 		AddCommand(&Command{Name: "test"})
@@ -96,7 +96,7 @@ func TestAddCommand(t *testing.T) {
 }
 
 func TestSetDefaultHelpDescription(t *testing.T) {
-	testRun := Tools_CreateTestRun(Tools_InitCommand, Tools_InitCommand)
+	testRun := ToolsCreateTestRun(ToolsInitCommand, ToolsInitCommand)
 
 	testRun(t, "desc test", func(t *testing.T) {
 		SetDefaultHelpDescription(true)
@@ -108,7 +108,7 @@ func TestSetDefaultHelpDescription(t *testing.T) {
 }
 
 func TestHelp(t *testing.T) {
-	testRun := Tools_CreateTestRun(Tools_InitCommand, Tools_InitCommand)
+	testRun := ToolsCreateTestRun(ToolsInitCommand, ToolsInitCommand)
 
 	testRun(t, "no message test", func(t *testing.T) {
 		command := &Command{Name: "test"}
@@ -152,7 +152,7 @@ func TestHelp(t *testing.T) {
 }
 
 func TestParseOption(t *testing.T) {
-	testRun := Tools_CreateTestRun(Tools_InitCommand, Tools_InitCommand)
+	testRun := ToolsCreateTestRun(ToolsInitCommand, ToolsInitCommand)
 
 	testRun(t, "no option test", func(t *testing.T) {
 		command := &Command{Name: "test"}

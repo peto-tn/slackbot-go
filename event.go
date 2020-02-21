@@ -1,6 +1,6 @@
 package slackbot
 
-// Event
+// Event of slack.
 type Event map[string]interface{}
 
 // String data in Event.

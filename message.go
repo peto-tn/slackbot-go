@@ -7,7 +7,7 @@ import (
 	"github.com/nlopes/slack"
 )
 
-// MessageHandler
+// MessageHandler for Slack
 type MessageHandler interface {
 	OnMessage(e Event, texts []string)
 	OnMentionMessage(e Event, texts []string)
@@ -17,14 +17,14 @@ var (
 	messageHandler MessageHandler
 )
 
-// SetMessageHandler.
+// SetMessageHandler for slackbot
 func SetMessageHandler(handler MessageHandler) {
 	messageHandler = handler
 }
 
 func onMessage(e Event) {
 	texts := strings.Split(strings.TrimSpace(e.Text()), " ")
-	if texts[0] == fmt.Sprintf("<@%s>", slackBotUserId) {
+	if texts[0] == fmt.Sprintf("<@%s>", slackBotUserID) {
 		onMentionMessage(e)
 	} else {
 		if !executeCommand(e, texts) && messageHandler != nil {
@@ -40,7 +40,7 @@ func onMentionMessage(e Event) {
 	}
 }
 
-// PostMessage.
+// PostMessage to Slack.
 func PostMessage(e Event, message string) {
 	channel := e.Channel()
 	api.PostMessage(
@@ -49,7 +49,7 @@ func PostMessage(e Event, message string) {
 	)
 }
 
-// PostEphemeral message.
+// PostEphemeral message to Slack.
 func PostEphemeral(e Event, message string) {
 	channel := e.Channel()
 	api.PostEphemeral(
@@ -59,7 +59,7 @@ func PostEphemeral(e Event, message string) {
 	)
 }
 
-// ReplayMessage for event.
+// ReplayMessage to Slack.
 func ReplyMessage(e Event, message string) {
 	channel := e.Channel()
 	threadTimestamp := e.ThreadTimestamp()
