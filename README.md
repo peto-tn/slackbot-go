@@ -2,9 +2,11 @@ slackbot-go
 =======
 
 [![Test Status](https://github.com/peto-tn/slackbot-go/workflows/test/badge.svg?branch=master)][actions]
+[![Coverage Status](https://coveralls.io/repos/github/peto-tn/slackbot-go/badge.svg?branch=master)][coveralls]
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)][license]
 
 [actions]: https://github.com/peto-tn/slackbot-go/actions?workflow=test
+[coveralls]: https://coveralls.io/github/peto-tn/slackbot-go?branch=master
 [license]: https://github.com/peto-tn/slackbot-go/blob/master/LICENSE
 
 ## Description
