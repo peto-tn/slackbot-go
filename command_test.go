@@ -74,7 +74,6 @@ func TestExecuteCommand(t *testing.T) {
 		}()
 		texts := []string{"test", "invalid_option"}
 		executeCommand(Event{}, texts)
-		assert.Fail(t, "Must not reach.")
 	})
 
 	testRun(t, "undefined command test", func(t *testing.T) {
