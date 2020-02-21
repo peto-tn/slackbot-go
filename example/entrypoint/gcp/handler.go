@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	slackbot "github.com/peto-tn/slackbot-go"
-	_ "github.com/peto-tn/slackbot-go/example"
+	_ "github.com/peto-tn/slackbot-go/example/command"
 )
 
 func OnCall(w http.ResponseWriter, r *http.Request) {
