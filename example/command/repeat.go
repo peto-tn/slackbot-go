@@ -15,6 +15,7 @@ func init() {
 	})
 }
 
+// RepeatOption for repeat command.
 type RepeatOption struct {
 	Message string
 	Count   string `default:"1"`

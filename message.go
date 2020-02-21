@@ -59,7 +59,7 @@ func PostEphemeral(e Event, message string) {
 	)
 }
 
-// ReplayMessage to Slack.
+// ReplyMessage to Slack.
 func ReplyMessage(e Event, message string) {
 	channel := e.Channel()
 	threadTimestamp := e.ThreadTimestamp()

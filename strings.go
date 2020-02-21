@@ -5,25 +5,22 @@ import "strings"
 func addBrackets(s string) string {
 	if s == "" {
 		return s
-	} else {
-		return "(" + s + ")"
 	}
+	return "(" + s + ")"
 }
 
 func encloseString(s, character string) string {
 	if s == "" {
 		return s
-	} else {
-		return character + s + character
 	}
+	return character + s + character
 }
 
 func encloseSubstring(s, target, character string) string {
 	if s == "" || target == "" {
 		return s
-	} else {
-		return strings.Replace(s, target, character+target+character, 1)
 	}
+	return strings.Replace(s, target, character+target+character, 1)
 }
 
 func boldString(s string) string {
@@ -41,9 +38,8 @@ func boldSubstring(s, target string) string {
 func selectString(condition bool, trueValue, falseValue string) string {
 	if condition {
 		return trueValue
-	} else {
-		return falseValue
 	}
+	return falseValue
 }
 
 func containsString(strs []string, target string) bool {
