@@ -8,11 +8,14 @@ slackbot-go
 ## Description
 Chatbot for slack of golang.
 
-## Setup Token and ID
+## Setup
+### Token,  ID
 You need to set up Token and ID in one of the following ways.
+- Setup() function
+- Environment Variables
 
-### Call Setup() function
-Can be set by calling the Setup function
+#### Setup() function
+Can be set by calling the Setup function.
 ```
 import (
     slackbot "github.com/peto-tn/slackbot-go"
@@ -29,16 +32,16 @@ func init() {
 }
 ```
 
-### Environment Variables
+#### Environment Variables
 Automatically used if the following environment variables are set.
 - SLACK_ACCESS_TOKEN
 - SLACK_BOT_USER_ID
 - SLACK_VERIFICATION_TOKEN
 
-## Entry point
+### Entry point
 Create an entry point for `slackbot-go`.
 
-### AWS Lambda
+#### AWS Lambda
 ```
 import (
     slackbot "github.com/peto-tn/slackbot-go"
@@ -48,7 +51,8 @@ func main() {
     slackbot.AWSLambdaStart()
 }
 ```
-### GCP Cloud Functions
+
+#### GCP Cloud Functions
 ```
 import (
     "net/http"
@@ -60,7 +64,8 @@ func OnCall(w http.ResponseWriter, r *http.Request) {
     slackbot.OnCall(w, r)
 }
 ```
-### Standalone
+
+#### Listen 
 ```
 import (
     slackbot "github.com/peto-tn/slackbot-go"
@@ -72,7 +77,58 @@ func main() {
 ```
 
 ## Add ChatOps Command
-WIP
+This is a sample command to repeat a message.  
+You can optionally specify the number of repetitions and the font.
+```
+package example
+
+import (
+	"strconv"
+
+	slackbot "github.com/peto-tn/slackbot-go"
+)
+
+func init() {
+	slackbot.AddCommand(&slackbot.Command{
+		Name:        "repeat",
+		HelpMessage: "Repeat input message.",
+		Execute:     repeat,
+		Option:      RepeatOption{},
+	})
+}
+
+type RepeatOption struct {
+	Message string
+	Count   string `default:"1"`
+	Font    string `default:"thin" choice:"thin,bold,italic"`
+}
+
+func repeat(e slackbot.Event, opt interface{}) {
+	option := opt.(RepeatOption)
+
+	message := ""
+
+	// Add messages as many as Count
+	count, err := strconv.Atoi(option.Count)
+	if err != nil {
+		slackbot.ReplyMessage(e, "error: Invalid format for 'Count' option.")
+		return
+	}
+	for i := 0; i < count; i++ {
+		message += option.Message
+	}
+
+	// Font
+	switch option.Font {
+	case "bold":
+		message = "*" + message + "*"
+	case "italic":
+		message = "_" + message + "_"
+	}
+
+	slackbot.ReplyMessage(e, message)
+}
+```
 
 ## Author
 [peto-tn](https://github.com/peto-tn)
