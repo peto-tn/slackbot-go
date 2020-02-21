@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// ChatOps Command
 type Command struct {
 	Name        string
 	HelpMessage string
@@ -19,6 +20,8 @@ var (
 	commandKeys = []string{}
 )
 
+// Setup initial command.
+// help and ping command are added automativally.
 func SetupCommand(custom []*Command) {
 	ClearCommand()
 	AddCommand(helpCommand)
@@ -29,6 +32,7 @@ func SetupCommand(custom []*Command) {
 	}
 }
 
+// Clear command all.
 func ClearCommand() {
 	commands = map[string]*Command{}
 	commandKeys = []string{}
@@ -49,11 +53,13 @@ func executeCommand(e Event, texts []string) bool {
 	return false
 }
 
+// Add command.
 func AddCommand(c *Command) {
 	commands[c.Name] = c
 	commandKeys = append(commandKeys, c.Name)
 }
 
+// Set default help description display.
 func SetDefaultHelpDescription(description bool) {
 	if description {
 		helpCommand.Option = HelpCommandOptionDesc{}
@@ -62,6 +68,7 @@ func SetDefaultHelpDescription(description bool) {
 	}
 }
 
+// Get help message for command.
 func Help(c *Command, desc bool) string {
 	name := c.Name
 	message := selectString(desc && c.HelpMessage != "", c.HelpMessage, "")
@@ -91,6 +98,7 @@ func Help(c *Command, desc bool) string {
 	return name + option + message
 }
 
+// Parse command option.
 func ParseOption(c *Command, options []string) (interface{}, error) {
 	if c.Option == nil {
 		return nil, nil
@@ -141,22 +149,27 @@ var helpCommand = &Command{
 	Option: HelpCommandOptionDesc{},
 }
 
+// HelpCommand option
 type HelpCommandOption interface {
 	IsDescription() string
 }
 
+// HelpCommand option (enabled default description)
 type HelpCommandOptionDesc struct {
 	Description string `default:"true" choice:"false,true"`
 }
 
+// Get whether to display description (enabled default description)
 func (o HelpCommandOptionDesc) IsDescription() string {
 	return o.Description
 }
 
+// HelpCommand option (disabled default description)
 type HelpCommandOptionSimple struct {
 	Description string `default:"false" choice:"false,true"`
 }
 
+// Get whether to display description (disabled default description)
 func (o HelpCommandOptionSimple) IsDescription() string {
 	return o.Description
 }

@@ -16,6 +16,7 @@ var (
 	messageHandler MessageHandler
 )
 
+// Set message handler.
 func SetMessageHandler(handler MessageHandler) {
 	messageHandler = handler
 }
@@ -38,6 +39,7 @@ func onMentionMessage(e Event) {
 	}
 }
 
+// Post message.
 func PostMessage(e Event, message string) {
 	channel := e.Channel()
 	api.PostMessage(
@@ -46,6 +48,7 @@ func PostMessage(e Event, message string) {
 	)
 }
 
+// post ephemeral message.
 func PostEphemeral(e Event, message string) {
 	channel := e.Channel()
 	api.PostEphemeral(
@@ -55,6 +58,7 @@ func PostEphemeral(e Event, message string) {
 	)
 }
 
+// replay message for event.
 func ReplyMessage(e Event, message string) {
 	channel := e.Channel()
 	threadTimestamp := e.ThreadTimestamp()

@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
+// Handler for AWS Lambda
 func AWSLambdaHandler(ctx context.Context, e events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	r, err := gateway.NewRequest(ctx, e)
 	if err != nil {
@@ -20,6 +21,7 @@ func AWSLambdaHandler(ctx context.Context, e events.APIGatewayProxyRequest) (eve
 	return w.End(), nil
 }
 
+// Start AWS Lambda
 func AWSLambdaStart() {
 	lambda.Start(AWSLambdaHandler)
 }
