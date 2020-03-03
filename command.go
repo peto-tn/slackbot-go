@@ -23,7 +23,6 @@ var (
 // SetupCommand for slackbot.
 // help and ping command are added automativally.
 func SetupCommand(custom []*Command) {
-	ClearCommand()
 	AddCommand(helpCommand)
 	AddCommand(pingCommand)
 

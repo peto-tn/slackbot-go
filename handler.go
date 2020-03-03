@@ -1,7 +1,6 @@
 package slackbot
 
 import (
-	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -16,18 +15,6 @@ var (
 
 	api *slack.Client
 )
-
-func init() {
-	if flag.Lookup("test.v") != nil {
-		return
-	}
-
-	Setup(
-		os.Getenv("SLACK_BOT_USER_ID"),
-		os.Getenv("SLACK_VERIFICATION_TOKEN"),
-		os.Getenv("SLACK_ACCESS_TOKEN"),
-	)
-}
 
 // Setup slackbot.
 func Setup(argBotUserID, argVerificationToken, argAccessToken string) {
@@ -51,6 +38,13 @@ func Setup(argBotUserID, argVerificationToken, argAccessToken string) {
 
 // OnCall is receive slack events handler.
 func OnCall(w http.ResponseWriter, r *http.Request) {
+	if api == nil {
+		Setup(
+			os.Getenv("SLACK_BOT_USER_ID"),
+			os.Getenv("SLACK_VERIFICATION_TOKEN"),
+			os.Getenv("SLACK_ACCESS_TOKEN"),
+		)
+	}
 	p, err := DecodeJSON(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -84,13 +78,13 @@ func OnCall(w http.ResponseWriter, r *http.Request) {
 
 		default:
 			w.WriteHeader(http.StatusInternalServerError)
-			log.Fatalf("not support event: %s", eventName)
+			log.Printf("not support event: %s", eventName)
 			return
 		}
 
 	default:
 		w.WriteHeader(http.StatusInternalServerError)
-		log.Fatalf("not support type: %s", typeName)
+		log.Printf("not support type: %s", typeName)
 		return
 	}
 
@@ -101,7 +95,7 @@ func OnCall(w http.ResponseWriter, r *http.Request) {
 func verifyToken(w http.ResponseWriter, token string) {
 	if token != verificationToken {
 		w.WriteHeader(http.StatusInternalServerError)
-		log.Fatalf("not verified token: %s", token)
+		panic("not verified token: " + token)
 	}
 }
 
