@@ -192,3 +192,35 @@ func TestParseOption(t *testing.T) {
 		assert.Nil(t, option)
 	})
 }
+
+func TestHelpCommand_Execute(t *testing.T) {
+	testRun := ToolsCreateTestRun(ToolsInitCommand, ToolsInitCommand)
+
+	testRun(t, "normal test", func(t *testing.T) {
+		helpCommand.Execute(Event{}, HelpCommandOptionDesc{})
+	})
+}
+
+func TestHelpCommandOptionDesc_IsDescription(t *testing.T) {
+	SetDefaultHelpDescription(true)
+	t.Run("normal test", func(t *testing.T) {
+		option, _ := ParseOption(helpCommand, []string{})
+		result := option.(HelpCommandOption).IsDescription()
+		assert.Equal(t, "true", result)
+	})
+}
+
+func TestHelpCommandOptionSimple_IsDescription(t *testing.T) {
+	SetDefaultHelpDescription(false)
+	t.Run("normal test", func(t *testing.T) {
+		option, _ := ParseOption(helpCommand, []string{})
+		result := option.(HelpCommandOption).IsDescription()
+		assert.Equal(t, "false", result)
+	})
+}
+
+func TestPingCommand_Execute(t *testing.T) {
+	t.Run("normal test", func(t *testing.T) {
+		pingCommand.Execute(Event{}, nil)
+	})
+}
