@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -116,7 +117,7 @@ func ParseOption(c *Command, options []string) (interface{}, error) {
 		}
 
 		// validate by choice value
-		choiceValue := rt.Field(i).Tag.Get("choice")
+		choiceValue := parseChoice(rt.Field(i))
 		if choiceValue != "" && !containsString(strings.Split(choiceValue, ","), value) {
 			value = ""
 		}
@@ -125,10 +126,43 @@ func ParseOption(c *Command, options []string) (interface{}, error) {
 			return nil, errors.New("option error.\n" + Help(c, true))
 		}
 
-		rv.Field(i).SetString(value)
+		err := setValue(rv.Field(i), value)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return rv.Interface(), nil
+}
+
+// parseChoice option value.
+func parseChoice(v reflect.StructField) string {
+	switch v.Type.Kind() {
+	case reflect.String:
+		return v.Tag.Get("choice")
+	case reflect.Bool:
+		return "true,false"
+	default:
+	}
+
+	return ""
+}
+
+// setValue for option.
+func setValue(v reflect.Value, value string) error {
+	switch v.Kind() {
+	case reflect.String:
+		v.SetString(value)
+	case reflect.Bool:
+		boolValue, err := strconv.ParseBool(value)
+		if err != nil {
+			return err
+		}
+		v.SetBool(boolValue)
+	default:
+	}
+
+	return nil
 }
 
 // HelpCommand

@@ -1,6 +1,7 @@
 package slackbot
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -190,6 +191,73 @@ func TestParseOption(t *testing.T) {
 		option, err := ParseOption(command, []string{"invalid"})
 		assert.Error(t, err)
 		assert.Nil(t, option)
+	})
+}
+
+func TestParseChoice(t *testing.T) {
+	testRun := ToolsCreateTestRun(ToolsInitCommand, ToolsInitCommand)
+
+	type Test struct {
+		String    string `choice:"hoge"`
+		Bool      bool
+		Interface interface{}
+	}
+	testOption := Test{}
+
+	rv := reflect.New(reflect.TypeOf(testOption)).Elem()
+	rt := rv.Type()
+
+	testRun(t, "string test", func(t *testing.T) {
+		choiceValue := parseChoice(rt.Field(0))
+		assert.Equal(t, "hoge", choiceValue)
+	})
+
+	testRun(t, "bool test", func(t *testing.T) {
+		choiceValue := parseChoice(rt.Field(1))
+		assert.Equal(t, "true,false", choiceValue)
+	})
+
+	testRun(t, "interface test", func(t *testing.T) {
+		choiceValue := parseChoice(rt.Field(2))
+		assert.Equal(t, "", choiceValue)
+	})
+}
+
+func TestSetValue(t *testing.T) {
+	testRun := ToolsCreateTestRun(ToolsInitCommand, ToolsInitCommand)
+
+	type Test struct {
+		String    string `choice:"hoge"`
+		Bool      bool
+		Interface interface{}
+	}
+	testOption := Test{}
+
+	testRun(t, "string test", func(t *testing.T) {
+		rv := reflect.New(reflect.TypeOf(testOption)).Elem()
+		err := setValue(rv.Field(0), "fuga")
+		assert.NoError(t, err)
+		assert.Equal(t, "fuga", rv.Interface().(Test).String)
+	})
+
+	testRun(t, "bool test", func(t *testing.T) {
+		rv := reflect.New(reflect.TypeOf(testOption)).Elem()
+		err := setValue(rv.Field(1), "true")
+		assert.NoError(t, err)
+		assert.True(t, rv.Interface().(Test).Bool)
+	})
+
+	testRun(t, "bool error test", func(t *testing.T) {
+		rv := reflect.New(reflect.TypeOf(testOption)).Elem()
+		err := setValue(rv.Field(1), "hoge")
+		assert.Error(t, err)
+	})
+
+	testRun(t, "interface test", func(t *testing.T) {
+		rv := reflect.New(reflect.TypeOf(testOption)).Elem()
+		err := setValue(rv.Field(2), "")
+		assert.NoError(t, err)
+		assert.Equal(t, testOption.Interface, rv.Interface().(Test).Interface)
 	})
 }
 
