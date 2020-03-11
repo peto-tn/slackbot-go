@@ -86,7 +86,7 @@ func Help(c *Command, desc bool) string {
 	for i := 0; i < rt.NumField(); i++ {
 		f := rt.Field(i)
 		defaultValue := f.Tag.Get("default")
-		choiceValue := selectString(desc, f.Tag.Get("choice"), "")
+		choiceValue := selectString(desc, parseChoice(f), "")
 
 		value := selectString(choiceValue != "", choiceValue, defaultValue)
 		value = boldSubstring(value, defaultValue)
@@ -126,10 +126,7 @@ func ParseOption(c *Command, options []string) (interface{}, error) {
 			return nil, errors.New("option error.\n" + Help(c, true))
 		}
 
-		err := setValue(rv.Field(i), value)
-		if err != nil {
-			return nil, err
-		}
+		setValue(rv.Field(i), value)
 	}
 
 	return rv.Interface(), nil

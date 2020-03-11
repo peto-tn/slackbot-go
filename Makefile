@@ -9,7 +9,7 @@ test:
 
 .PHONY: coverage
 coverage:
-	goverage -coverprofile=coverage.out .
+	go test -coverprofile coverage.out -covermode atomic .
 	go tool cover -html=coverage.out
 
 .PHONY: lint
