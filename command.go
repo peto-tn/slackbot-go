@@ -3,6 +3,7 @@ package slackbot
 import (
 	"errors"
 	"fmt"
+	"math"
 	"reflect"
 	"strconv"
 	"strings"
@@ -86,7 +87,7 @@ func Help(c *Command, desc bool) string {
 	for i := 0; i < rt.NumField(); i++ {
 		f := rt.Field(i)
 		defaultValue := f.Tag.Get("default")
-		choiceValue := selectString(desc, parseChoice(f), "")
+		choiceValue := selectString(desc, strings.Join(parseChoice(f), ","), "")
 
 		value := selectString(choiceValue != "", choiceValue, defaultValue)
 		value = boldSubstring(value, defaultValue)
@@ -117,8 +118,7 @@ func ParseOption(c *Command, options []string) (interface{}, error) {
 		}
 
 		// validate by choice value
-		choiceValue := parseChoice(rt.Field(i))
-		if choiceValue != "" && !containsString(strings.Split(choiceValue, ","), value) {
+		if !containsChoice(rt.Field(i), value) {
 			value = ""
 		}
 
@@ -132,17 +132,78 @@ func ParseOption(c *Command, options []string) (interface{}, error) {
 	return rv.Interface(), nil
 }
 
-// parseChoice option value.
-func parseChoice(v reflect.StructField) string {
+// containsChoice option value.
+func containsChoice(v reflect.StructField, choiceValue string) bool {
+	candidates := parseChoice(v)
 	switch v.Type.Kind() {
-	case reflect.String:
-		return v.Tag.Get("choice")
-	case reflect.Bool:
-		return "true,false"
+	case reflect.String, reflect.Bool:
+		return containsString(candidates, choiceValue)
+	case reflect.Int32, reflect.Int:
+		choice, err := strconv.ParseInt(choiceValue, 10, 32)
+		if err != nil {
+			return false
+		}
+		for _, candidate := range candidates {
+			if strings.HasPrefix(candidate, "min:") {
+				min, _ := strconv.ParseInt(candidate[4:], 10, 32)
+				if min > choice {
+					return false
+				}
+			}
+			if strings.HasPrefix(candidate, "max:") {
+				max, _ := strconv.ParseInt(candidate[4:], 10, 32)
+				if max < choice {
+					return false
+				}
+			}
+		}
+		return true
 	default:
 	}
 
-	return ""
+	return false
+}
+
+// parseChoice option value.
+func parseChoice(v reflect.StructField) []string {
+	switch v.Type.Kind() {
+	case reflect.String:
+		return strings.Split(v.Tag.Get("choice"), ",")
+	case reflect.Bool:
+		return []string{"true", "false"}
+	case reflect.Int32, reflect.Int:
+		result := []string{}
+		min := int64(math.MinInt32)
+		max := int64(math.MaxInt32)
+		if value := v.Tag.Get("min"); value != "" {
+			if i64, err := strconv.ParseInt(value, 10, 32); err == nil {
+				if min <= i64 && i64 <= max {
+					min = i64
+				}
+			}
+		}
+		if value := v.Tag.Get("max"); value != "" {
+			if i64, err := strconv.ParseInt(value, 10, 32); err == nil {
+				if min <= i64 && i64 <= max {
+					max = i64
+				}
+			}
+		}
+		if value := v.Tag.Get("default"); value != "" {
+			if i64, err := strconv.ParseInt(value, 10, 32); err == nil {
+				if min <= i64 && i64 <= max {
+					result = append(result, value)
+				}
+			}
+		}
+
+		result = append(result, "min:"+strconv.Itoa(int(min)))
+		result = append(result, "max:"+strconv.Itoa(int(max)))
+		return result
+	default:
+	}
+
+	return []string{}
 }
 
 // setValue for option.
@@ -156,6 +217,12 @@ func setValue(v reflect.Value, value string) error {
 			return err
 		}
 		v.SetBool(boolValue)
+	case reflect.Int, reflect.Int32:
+		i64, err := strconv.ParseInt(value, 10, 32)
+		if err != nil {
+			return err
+		}
+		v.SetInt(i64)
 	default:
 	}
 
