@@ -1,5 +1,7 @@
 package slackbot
 
+import "regexp"
+
 // Event of slack.
 type Event map[string]interface{}
 
@@ -42,4 +44,11 @@ func (e Event) ThreadTimestamp() string {
 	}
 
 	return e.String("event_ts")
+}
+
+// ModifyText correctly.
+func (e Event) ModifyText() {
+	// multiple space to single space
+	rep := regexp.MustCompile(" +")
+	e["text"] = rep.ReplaceAllString(e.Text(), " ")
 }

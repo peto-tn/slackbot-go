@@ -95,3 +95,15 @@ func TestEvent_ThreadTimestamp(t *testing.T) {
 		assert.Equal(t, "test", result)
 	})
 }
+
+func TestEvent_ModifyText(t *testing.T) {
+	t.Parallel()
+	t.Run("normal test", func(t *testing.T) {
+		event := Event{
+			"text": "ho     ge ho  ge",
+		}
+		assert.Equal(t, "ho     ge ho  ge", event.Text())
+		event.ModifyText()
+		assert.Equal(t, "ho ge ho ge", event.Text())
+	})
+}

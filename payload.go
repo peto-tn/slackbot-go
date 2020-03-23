@@ -40,5 +40,7 @@ func (p Payload) Token() string {
 
 // Event in Payload.
 func (p Payload) Event() Event {
-	return p["event"].(map[string]interface{})
+	var e Event = p["event"].(map[string]interface{})
+	e.ModifyText()
+	return e
 }
