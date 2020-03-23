@@ -123,6 +123,7 @@ func ParseOption(c *Command, options []string) (interface{}, error) {
 		}
 
 		if value == "" {
+			fmt.Printf("%d\n", i)
 			return nil, errors.New("option error.\n" + Help(c, true))
 		}
 
@@ -137,6 +138,9 @@ func containsChoice(v reflect.StructField, choiceValue string) bool {
 	candidates := parseChoice(v)
 	switch v.Type.Kind() {
 	case reflect.String, reflect.Bool:
+		if len(candidates) == 0 {
+			return true
+		}
 		return containsString(candidates, choiceValue)
 	case reflect.Int32, reflect.Int:
 		choice, err := strconv.ParseInt(choiceValue, 10, 32)
@@ -168,7 +172,11 @@ func containsChoice(v reflect.StructField, choiceValue string) bool {
 func parseChoice(v reflect.StructField) []string {
 	switch v.Type.Kind() {
 	case reflect.String:
-		return strings.Split(v.Tag.Get("choice"), ",")
+		choice := v.Tag.Get("choice")
+		if choice == "" {
+			return []string{}
+		}
+		return strings.Split(choice, ",")
 	case reflect.Bool:
 		return []string{"true", "false"}
 	case reflect.Int32, reflect.Int:

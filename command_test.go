@@ -181,10 +181,11 @@ func TestParseOption(t *testing.T) {
 	testRun(t, "choice test", func(t *testing.T) {
 		type Test struct {
 			Desc string `default:"true" choice:"false,true"`
+			Bool bool   `default:"false"`
 		}
-		expectOption := Test{Desc: "false"}
+		expectOption := Test{Desc: "false", Bool: true}
 		command := &Command{Name: "test", Option: Test{}}
-		option, err := ParseOption(command, []string{"false"})
+		option, err := ParseOption(command, []string{"false", "true"})
 		assert.NoError(t, err)
 		assert.Equal(t, expectOption, option)
 	})
