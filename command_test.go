@@ -205,11 +205,12 @@ func TestContainsChoice(t *testing.T) {
 	testRun := ToolsCreateTestRun(ToolsInitCommand, ToolsInitCommand)
 
 	type Test struct {
-		Interface interface{}
-		String    string `default:"true" choice:"hoge"`
-		Bool      bool   `default:"true"`
-		Int32     int32  `default:"1" min:"-20" max:"100"`
-		Int       int    `default:"10" min:"-200" max:"1000"`
+		Interface      interface{}
+		String         string `default:"true" choice:"hoge"`
+		Bool           bool   `default:"true"`
+		Int32          int32  `default:"1" min:"-20" max:"100"`
+		Int            int    `default:"10" min:"-200" max:"1000"`
+		StringNoChoice string `default:"true"`
 	}
 	testOption := Test{}
 
@@ -249,6 +250,11 @@ func TestContainsChoice(t *testing.T) {
 	testRun(t, "int32 parse error test", func(t *testing.T) {
 		result := containsChoice(rt.Field(3), "hoge")
 		assert.False(t, result)
+	})
+
+	testRun(t, "string no choice test", func(t *testing.T) {
+		result := containsChoice(rt.Field(5), "hoge")
+		assert.True(t, result)
 	})
 }
 

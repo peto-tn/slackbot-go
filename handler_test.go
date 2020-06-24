@@ -98,7 +98,7 @@ func TestOnCall(t *testing.T) {
 			},
 		})
 		rec := httptest.NewRecorder()
-		req, _ := http.NewRequest("POST", "", strings.NewReader(`{"type":"event_callback", "token":"token", "event":{"type":"app_mention", "text":"<@bot> test"}}`))
+		req, _ := http.NewRequest("POST", "", strings.NewReader(`{"type":"event_callback", "token":"token", "event":{"type":"app_mention", "text":"test"}}`))
 
 		OnCall(rec, req)
 

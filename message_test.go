@@ -115,7 +115,7 @@ func TestOnMentionMessage(t *testing.T) {
 
 	testRun(t, "execute mention command test", func(t *testing.T) {
 		event := Event{
-			"text": "<@bot> test",
+			"text": "test",
 		}
 
 		onMentionMessage(event)
@@ -129,6 +129,16 @@ func TestOnMentionMessage(t *testing.T) {
 		}
 
 		onMessage(event)
+		assert.False(t, called)
+		assert.True(t, handler.OnMentionMessaged)
+	})
+
+	testRun(t, "handle app mention message test", func(t *testing.T) {
+		event := Event{
+			"text": "ignore",
+		}
+
+		onMentionMessage(event)
 		assert.False(t, called)
 		assert.True(t, handler.OnMentionMessaged)
 	})
