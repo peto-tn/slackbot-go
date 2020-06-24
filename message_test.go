@@ -115,6 +115,16 @@ func TestOnMentionMessage(t *testing.T) {
 
 	testRun(t, "execute mention command test", func(t *testing.T) {
 		event := Event{
+			"text": "<@bot> test",
+		}
+
+		onMentionMessage(event)
+		assert.True(t, called)
+		assert.False(t, handler.OnMentionMessaged)
+	})
+
+	testRun(t, "execute mention command test without bot user", func(t *testing.T) {
+		event := Event{
 			"text": "test",
 		}
 

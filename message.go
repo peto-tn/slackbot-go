@@ -38,6 +38,9 @@ func onMessage(e Event) {
 
 func onMentionMessage(e Event) {
 	texts := strings.Split(strings.TrimSpace(e.Text()), " ")
+	if texts[0] == fmt.Sprintf("<@%s>", slackBotUserID) {
+		texts = texts[1:]
+	}
 	if !executeCommand(e, texts) && messageHandler != nil {
 		messageHandler.OnMentionMessage(e, texts)
 	}
