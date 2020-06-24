@@ -2,7 +2,6 @@ package slackbot
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/nlopes/slack"
@@ -35,7 +34,6 @@ func onMessage(e Event) {
 }
 
 func onMentionMessage(e Event) {
-	log.Println(e.Text())
 	texts := strings.Split(strings.TrimSpace(e.Text()), " ")
 	if texts[0] == fmt.Sprintf("<@%s>", slackBotUserID) {
 		texts = texts[1:]
