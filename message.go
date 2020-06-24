@@ -2,6 +2,7 @@ package slackbot
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/nlopes/slack"
@@ -25,10 +26,7 @@ func SetMessageHandler(handler MessageHandler) {
 func onMessage(e Event) {
 	texts := strings.Split(strings.TrimSpace(e.Text()), " ")
 	if texts[0] == fmt.Sprintf("<@%s>", slackBotUserID) {
-		texts = texts[1:]
-		if !executeCommand(e, texts) && messageHandler != nil {
-			messageHandler.OnMentionMessage(e, texts)
-		}
+		onMentionMessage(e)
 	} else {
 		if !executeCommand(e, texts) && messageHandler != nil {
 			messageHandler.OnMessage(e, texts)
@@ -37,6 +35,7 @@ func onMessage(e Event) {
 }
 
 func onMentionMessage(e Event) {
+	log.Println(e.Text())
 	texts := strings.Split(strings.TrimSpace(e.Text()), " ")
 	if texts[0] == fmt.Sprintf("<@%s>", slackBotUserID) {
 		texts = texts[1:]
