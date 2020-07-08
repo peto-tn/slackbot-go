@@ -1,11 +1,12 @@
 package slackbot
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"os"
 
-	"github.com/nlopes/slack"
+	"github.com/slack-go/slack"
 )
 
 var (
@@ -76,11 +77,34 @@ func OnCall(w http.ResponseWriter, r *http.Request) {
 				onMentionMessage(event)
 			}
 
+		case "app_home_opened":
+			verifyToken(w, p.Token())
+			if verifyRequest(r) {
+				// onAppHomeOpend
+			}
+
 		default:
 			w.WriteHeader(http.StatusInternalServerError)
 			log.Printf("not support event: %s", eventName)
 			return
 		}
+
+	case "dialog_cancellation",
+		"dialog_submission",
+		"dialog_suggestion",
+		"interactive_message",
+		"message_action",
+		"block_actions",
+		"block_suggestion",
+		"view_submission",
+		"view_closed",
+		"shortcut":
+		var message slack.InteractionCallback
+		if err := json.NewDecoder(r.Body).Decode(&message); err != nil {
+			log.Printf("unrecognized interactive message")
+			return
+		}
+		onInteraction(message)
 
 	default:
 		w.WriteHeader(http.StatusInternalServerError)
